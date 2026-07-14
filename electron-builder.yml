@@ -51,5 +51,6 @@ linux:
       arch:
         - x64
   category: Games
+  artifactName: cs2-inventory-simulator-${version}-${arch}.${ext}
 
 publish: null
