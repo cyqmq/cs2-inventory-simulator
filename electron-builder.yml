@@ -1,0 +1,31 @@
+appId: com.ianlucas.cs2-inventory-simulator
+productName: CS2 Inventory Simulator
+directories:
+  output: release
+  buildResources: build
+files:
+  - build/client/**/*
+  - dist-electron/**/*
+  - package.json
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: public/favicon.ico
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: public/favicon.ico
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  icon: public/favicon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
