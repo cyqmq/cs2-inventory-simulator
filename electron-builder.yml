@@ -42,6 +42,9 @@ mac:
   category: public.app-category.games
 
 linux:
+  executableName: cs2-inventory-simulator
+  desktopName: CS2 Inventory Simulator
+  syncDesktopName: true
   target:
     - target: AppImage
       arch:
