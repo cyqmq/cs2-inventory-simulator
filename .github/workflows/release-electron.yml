@@ -19,6 +19,7 @@ env:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - name: windows
@@ -56,9 +57,15 @@ jobs:
       - name: Build Electron TypeScript
         run: node scripts/build-electron.mjs
 
+      - name: Install Linux build deps
+        if: matrix.os.name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2 dpkg-dev rpm
+
       - name: Package (${{ matrix.os.name }})
         run: |
-          npx electron-builder --config electron-builder.yml ${{ matrix.os.targets }} --publish never
+          npx electron-builder --config electron-builder.yml ${{ matrix.os.targets }} --publish never --verbose
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
