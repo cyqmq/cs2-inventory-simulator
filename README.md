@@ -99,6 +99,58 @@ Electron Renderer Process
 
 Steam OAuth works seamlessly: the Electron window directly navigates to Steam's login page and handles the callback locally.
 
+## CS2 Server Plugin (CounterStrikeSharp)
+
+To use your Inventory Simulator skins in-game on a CS2 server, **the server must have the [cs2-css-inventory-simulator](https://github.com/ianlucas/cs2-css-inventory-simulator) plugin installed**. This is a [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) plugin that bridges your inventory to the game.
+
+### Features
+
+- **Weapon skins, knives, gloves, and agents** from your inventory appear in-game.
+- **StatTrak** tracks kills and updates counters automatically.
+- **Graffiti sprays** using your equipped spray (`!spray`).
+- **Custom weapon names** displayed in-game.
+- **WebSocket live sync** — changes apply without restart.
+
+### Installation
+
+1. Install [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp) on your CS2 server (requires Runtime Identifier `linux-x64`).
+2. Download the latest `InventorySimulator` release from [cs2-css-inventory-simulator/releases](https://github.com/ianlucas/cs2-css-inventory-simulator/releases).
+3. Extract the plugin into:  
+   `game/csgo/addons/counterstrikesharp/plugins/InventorySimulator/`
+4. Configure the plugin at:  
+   `game/csgo/addons/counterstrikesharp/configs/plugins/InventorySimulator/InventorySimulator.json`
+
+### Configuration
+
+```json
+{
+  "invsim_url": "https://your-instance.com",
+  "invsim_apikey": "your-api-key",
+  "invsim_ws_enabled": true,
+  "invsim_ws_immediately": true,
+  "invsim_stattrak_ignore_bots": true,
+  "invsim_spray_enabled": true
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `invsim_url` | `https://inventory.cstrike.app` | Your Inventory Simulator URL |
+| `invsim_apikey` | `""` | API key for authentication |
+| `invsim_ws_enabled` | `false` | Allow `!ws` command to refresh inventory |
+| `invsim_ws_immediately` | `false` | Apply skins instantly (no respawn) |
+| `invsim_stattrak_ignore_bots` | `true` | Ignore bot kills for StatTrak |
+| `invsim_spray_enabled` | `true` | Enable `!spray` graffiti command |
+
+### Player Commands
+
+| Command | Description |
+|---------|-------------|
+| `!ws` | Refresh and apply your inventory skins |
+| `!spray` | Use your equipped graffiti spray |
+
+> **Desktop app users**: If self-hosting with the desktop app, set `invsim_url` to `http://localhost:3456` and generate an API key in the application settings under API Credentials.
+
 ## Bugs and Feature Requests
 
 Please be sure to add the following prefixes in the title when opening an issue:
