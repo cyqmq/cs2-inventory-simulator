@@ -99,10 +99,7 @@ export async function createRemixServer(options: ServerOptions) {
 
   return new Promise<{ port: number; server: typeof httpServer }>(
     (resolve, reject) => {
-      const listenOptions: [number] | [number, string] = host
-        ? [port, host]
-        : [port];
-      httpServer.listen(...listenOptions, () => {
+      const onListen = () => {
         const addr = httpServer.address();
         const actualPort =
           typeof addr === "object" && addr ? addr.port : port;
@@ -110,8 +107,13 @@ export async function createRemixServer(options: ServerOptions) {
           `[electron] Remix server listening on http://localhost:${actualPort}`
         );
         resolve({ port: actualPort, server: httpServer });
-      });
+      };
       httpServer.once("error", reject);
+      if (host !== undefined) {
+        httpServer.listen(port, host, onListen);
+      } else {
+        httpServer.listen(port, onListen);
+      }
     }
   );
 }
