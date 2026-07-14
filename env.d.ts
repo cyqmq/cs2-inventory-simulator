@@ -7,6 +7,8 @@ declare const __SOURCE_COMMIT__: string | undefined;
 
 interface ElectronAPI {
   getApiBaseUrl: () => Promise<string>;
+  setApiBaseUrl: (url: string) => Promise<boolean>;
+  getConfigPath: () => Promise<string>;
   steamLogin: () => Promise<void>;
   onSteamLoginResult: (callback: (session: string) => void) => void;
 }
