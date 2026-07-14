@@ -9,23 +9,20 @@ files:
   - package.json
 win:
   target:
-    - target: nsis
+    - target: portable
       arch:
         - x64
-  icon: public/favicon.ico
 mac:
   target:
     - target: dmg
       arch:
         - x64
         - arm64
-  icon: public/favicon.ico
 linux:
   target:
     - target: AppImage
       arch:
         - x64
-  icon: public/favicon.ico
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true

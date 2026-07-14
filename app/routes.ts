@@ -9,24 +9,15 @@ const serverRoutePatterns = [
   "healthz.",
   "translations.",
   "app.",
+  "app[",
   "index[.]html.",
   "sign-in.steam.callback."
 ];
 
 function isServerRoute(route: RouteConfig): boolean {
-  const path =
-    typeof route.path === "string"
-      ? route.path
-      : typeof route.segment === "string"
-        ? route.segment
-        : "";
-  return serverRoutePatterns.some((pattern) => path.startsWith(pattern));
+  const file = (route.file ?? "").replace(/^routes\//, "");
+  return serverRoutePatterns.some((pattern) => file.startsWith(pattern));
 }
 
-export default async function () {
-  const routes = await flatRoutes();
-  if (isElectronBuild) {
-    return routes.filter((route) => !isServerRoute(route));
-  }
-  return routes;
-}
+const routes = await flatRoutes();
+export default isElectronBuild ? routes.filter((route) => !isServerRoute(route)) : routes;

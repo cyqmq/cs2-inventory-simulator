@@ -6,5 +6,9 @@
 import { prisma } from "~/db.server";
 
 export async function setupPurge() {
-  await prisma.userCache.deleteMany();
+  try {
+    await prisma.userCache.deleteMany();
+  } catch {
+    // Database not available (e.g. during Electron SPA build)
+  }
 }

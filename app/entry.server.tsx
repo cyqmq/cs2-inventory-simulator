@@ -23,11 +23,13 @@ const ABORT_DELAY = 5_000;
 
 CS2Economy.load({ items: CS2_ITEMS, language: english });
 setupTranslation();
-void setupPurge();
-scheduleInactivityReset();
-void setupRules().then(() => {
-  void setupLogo();
-  void warmViewerCaches();
+Promise.all([
+  setupPurge().catch(() => {}),
+  setupRules()
+    .then(() => Promise.all([setupLogo(), warmViewerCaches()]))
+    .catch(() => {})
+]).then(() => {
+  scheduleInactivityReset();
 });
 
 export default function handleRequest(

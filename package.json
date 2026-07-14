@@ -1,5 +1,8 @@
 {
   "name": "@ianlucas/cs2-inventory-simulator",
+  "version": "1.0.0",
+  "description": "CS2 Inventory Simulator 桌面客户端",
+  "author": "cyqmq",
   "sideEffects": false,
   "type": "module",
   "scripts": {
@@ -76,5 +79,11 @@
   "main": "dist-electron/main.js",
   "engines": {
     "node": ">=24.0.0"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.8.0": true,
+    "electron@35.7.5": true,
+    "esbuild@0.28.1": true,
+    "prisma@7.8.0": true
   }
 }

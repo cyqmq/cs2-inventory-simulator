@@ -4,5 +4,6 @@ import fs from "fs";
 const isElectronBuild = ["electron"].includes(process.env.BUILD_MODE ?? "") || fs.existsSync(".electron-build");
 
 export default {
-  ssr: !isElectronBuild
+  ssr: !isElectronBuild,
+  prerender: isElectronBuild ? false : undefined
 } satisfies Config;
