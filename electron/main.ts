@@ -165,26 +165,31 @@ function showStartupError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
   console.error("[electron] Failed to start:", message);
 
-  let hint = "";
-  if (message.includes("DATABASE_URL") || message.includes("SESSION_SECRET")) {
-    hint =
-      "Missing environment variables.\n\n" +
-      "Please create a .env file in the project root with:\n" +
-      "  DATABASE_URL=\"postgres://user:password@host:5432/dbname\"\n" +
-      "  SESSION_SECRET=\"your-secret-key\"\n\n" +
-      "See .env.example for reference.";
-  } else if (message.includes("Build not found")) {
-    hint =
-      "Application build not found.\n\n" +
-      "Please run: npm run build";
-  } else if (message.includes("connect ECONNREFUSED") || message.includes("Prisma")) {
-    hint =
-      "Database connection failed.\n\n" +
-      "Please ensure PostgreSQL is running and accessible via the DATABASE_URL in your .env file.\n" +
-      "Then run: npx prisma migrate deploy";
-  } else {
-    hint = message;
-  }
+  const hint = (() => {
+    if (message.includes("DATABASE_URL") || message.includes("SESSION_SECRET")) {
+      return (
+        "Missing environment variables.\n\n" +
+        "Please create a .env file in the project root with:\n" +
+        "  DATABASE_URL=\"postgres://user:password@host:5432/dbname\"\n" +
+        "  SESSION_SECRET=\"your-secret-key\"\n\n" +
+        "See .env.example for reference."
+      );
+    }
+    if (message.includes("Build not found")) {
+      return (
+        "Application build not found.\n\n" +
+        "Please run: npm run build"
+      );
+    }
+    if (message.includes("connect ECONNREFUSED") || message.includes("Prisma")) {
+      return (
+        "Database connection failed.\n\n" +
+        "Please ensure PostgreSQL is running and accessible via the DATABASE_URL in your .env file.\n" +
+        "Then run: npx prisma migrate deploy"
+      );
+    }
+    return message;
+  })();
 
   dialog.showErrorBox(
     "CS2 Inventory Simulator - Startup Error",

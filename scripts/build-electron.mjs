@@ -1,5 +1,4 @@
 import * as esbuild from "esbuild";
-import { copyFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 

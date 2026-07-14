@@ -6,7 +6,7 @@ import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-  { ignores: ["build/", ".react-router/"] },
+  { ignores: ["build/", ".react-router/", "electron/*.mjs", "scripts/"] },
   eslint.configs.recommended,
   tseslint.configs.strict,
   {
