@@ -1,0 +1,54 @@
+appId: com.ianlucas.cs2-inventory-simulator
+productName: CS2 Inventory Simulator
+copyright: Copyright © Ian Lucas
+
+directories:
+  output: dist-electron
+  buildResources: build
+
+files:
+  - electron/**/*.mjs
+  - build/**/*
+  - public/**/*
+  - prisma/**/*
+  - node_modules/**/*
+  - package.json
+
+extraResources:
+  - from: prisma
+    to: prisma
+    filter:
+      - "**/*"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: ${productName}-Setup-${version}.${ext}
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  deleteAppDataOnUninstall: false
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.games
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  category: Games
+
+publish: null
