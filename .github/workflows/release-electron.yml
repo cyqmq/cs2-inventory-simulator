@@ -48,6 +48,13 @@ jobs:
           npm config set ignore-scripts false
           npm ci
 
+      - name: Fix symlink on Windows
+        if: runner.os == 'Windows'
+        run: |
+          Remove-Item -LiteralPath "public\images\flags" -Force -ErrorAction SilentlyContinue
+          Copy-Item -Recurse "node_modules\country-flag-icons\3x2" "public\images\flags"
+          Write-Host "Fixed public/images/flags symlink on Windows"
+
       - name: Generate Prisma types
         run: npx prisma generate
 
@@ -65,7 +72,7 @@ jobs:
 
       - name: Package (${{ matrix.os.name }})
         run: |
-          npx electron-builder --config electron-builder.yml ${{ matrix.os.targets }} --publish never --verbose
+          npx electron-builder --config electron-builder.yml ${{ matrix.os.targets }} --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
