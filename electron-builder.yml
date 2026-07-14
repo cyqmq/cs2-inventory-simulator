@@ -43,7 +43,6 @@ mac:
 
 linux:
   executableName: cs2-inventory-simulator
-  desktopName: CS2 Inventory Simulator
   target:
     - target: AppImage
       arch:
