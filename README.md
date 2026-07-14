@@ -27,13 +27,26 @@ A Counter-Strike 2 **Inventory Simulator** for the web and desktop, built with T
 
 This project includes a desktop build powered by **Electron**, wrapping the Remix application as a native desktop app.
 
-### Prerequisites
+### Download
+
+Pre-built desktop installers are available on the [Releases](https://github.com/cyqmq/cs2-inventory-simulator/releases) page:
+
+| Platform | Format | File |
+|----------|--------|------|
+| Windows | NSIS Installer | `CS2 Inventory Simulator-Setup-x.x.x.exe` |
+| macOS | DMG Image | `CS2 Inventory Simulator-x.x.x.dmg` |
+| Linux | AppImage | `CS2 Inventory Simulator-x.x.x.AppImage` |
+| Linux | DEB Package | `cs2-inventory-simulator_x.x.x_amd64.deb` |
+
+> Built automatically via GitHub Actions on each release tag.
+
+### Prerequisites (Self-build)
 
 - Node.js >= 24.0.0
 - PostgreSQL database
 - Steam API key (optional, for inventory sync)
 
-### Quick Start
+### Quick Start (Self-build)
 
 ```bash
 # 1. Configure environment variables
@@ -63,13 +76,28 @@ This starts the Vite dev server on port 3000 and opens an Electron window connec
 
 ### Package for Distribution
 
+#### Via GitHub Actions (Recommended)
+
+Create and push a version tag to trigger automatic multi-platform packaging:
+
+```bash
+git tag v2.32.0
+git push origin v2.32.0
+```
+
+Or go to the Actions tab → **Release Electron** → Run workflow → enter tag.
+
+The workflow builds on all three platforms simultaneously and uploads the artifacts to a GitHub Release.
+
+#### Via Local Build
+
 ```bash
 npm run electron:package
 ```
 
 Builds a distributable installer:
 - **Windows**: NSIS installer (`dist-electron/CS2 Inventory Simulator-Setup-x.x.x.exe`)
-- **macOS**: DMG image
+- **macOS**: DMG image (requires macOS)
 - **Linux**: AppImage and deb
 
 ### Scripts Reference
