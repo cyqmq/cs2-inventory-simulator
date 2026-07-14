@@ -1,5 +1,8 @@
 {
   "name": "@ianlucas/cs2-inventory-simulator",
+  "version": "2.32.0",
+  "description": "CS2 Inventory Simulator - Desktop App",
+  "author": "Ian Lucas",
   "sideEffects": false,
   "type": "module",
   "main": "electron/main.mjs",

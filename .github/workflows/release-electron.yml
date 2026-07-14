@@ -1,0 +1,122 @@
+name: Release Electron
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v2.32.0)"
+        required: true
+
+env:
+  NODE_OPTIONS: "--use-system-ca"
+  # Skip code signing for non-macOS (will be handled per-platform)
+  CSC_IDENTITY_AUTO_DISCOVERY: false
+  APPLE_SKIP_SIGNING: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - name: windows
+            runner: windows-latest
+            targets: --win
+          - name: linux
+            runner: ubuntu-latest
+            targets: --linux
+          - name: macos
+            runner: macos-latest
+            targets: --mac
+    runs-on: ${{ matrix.os.runner }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          npm config set ignore-scripts false
+          npm ci
+
+      - name: Generate Prisma types
+        run: npx prisma generate
+
+      - name: Build Remix app
+        run: npm run build
+
+      - name: Build Electron TypeScript
+        run: node scripts/build-electron.mjs
+
+      - name: Package (${{ matrix.os.name }})
+        run: |
+          npx electron-builder --config electron-builder.yml ${{ matrix.os.targets }} --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os.name }}
+          path: dist-electron/*
+          if-no-files-found: error
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          merge-multiple: true
+
+      - name: List files
+        run: ls -la
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 ${{ steps.tag.outputs.tag }}^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            git log --reverse "$PREV_TAG..${{ steps.tag.outputs.tag }}" --pretty=format:"* %s (%h)" -- . > RELEASE_NOTES.md
+          else
+            git log --reverse $(git rev-list --max-parents=0 HEAD)..HEAD --pretty=format:"* %s (%h)" -- . > RELEASE_NOTES.md
+          fi
+          echo "Initial release of CS2 Inventory Simulator Desktop App" >> RELEASE_NOTES.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            *.exe
+            *.dmg
+            *.AppImage
+            *.deb
+            *.yml
+            *.blockmap
+          fail_on_unmatched_files: false
+          draft: false
+          prerelease: false
