@@ -162,8 +162,8 @@ export function AppProvider({
         // Inventory Items
         inventory.getAll().map((item) =>
           transform(item, {
-            models: rules.inventoryItemEquipHideModel,
-            types: rules.inventoryItemEquipHideType
+            models: rules.inventoryItemEquipHideModel || [],
+            types: rules.inventoryItemEquipHideType || []
           })
         ),
         // Default Game Items

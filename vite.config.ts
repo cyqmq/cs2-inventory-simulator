@@ -1,13 +1,16 @@
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { createHash } from "crypto";
-import { readdirSync, readFileSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { resolve } from "path";
 import { minify_sync } from "terser";
 import ts from "typescript";
 import { defineConfig } from "vite";
 
+const isElectronBuild = ["electron"].includes(process.env.BUILD_MODE ?? "") || existsSync(".electron-build");
+
 export default defineConfig({
+  base: "/",
   server: {
     port: 3000
   },

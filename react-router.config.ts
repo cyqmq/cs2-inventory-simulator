@@ -5,5 +5,5 @@ const isElectronBuild = ["electron"].includes(process.env.BUILD_MODE ?? "") || f
 
 export default {
   ssr: !isElectronBuild,
-  prerender: isElectronBuild ? false : undefined
+  prerender: false
 } satisfies Config;

@@ -109,9 +109,13 @@ export function Header({
                 <>
                   {!appHideAuth && (
                     <HeaderLink
-                      to="/sign-in"
+                      to="/"
                       icon={faSteam}
                       label={translate("HeaderSignInLabel")}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.dispatchEvent(new Event("cs2:sign-in"));
+                      }}
                     />
                   )}
                   <div className="gap-4 lg:flex lg:flex-1 lg:justify-end">
