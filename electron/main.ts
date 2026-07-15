@@ -21,7 +21,7 @@ const MIME_TYPES: Record<string, string> = {
   ".svg": "image/svg+xml"
 };
 
-const ELECTRON_AUTH_SECRET = process.env.ELECTRON_AUTH_SECRET || "68UzqY7cLs2vD9VodiwfxJWjuQEmhrRX";
+const ELECTRON_AUTH_SECRET = process.env.ELECTRON_AUTH_SECRET || "change-me-in-production";
 const STEAM_OPENID_SERVER = "https://steamcommunity.com/openid/login";
 const STEAM_ID_REGEX = /^https:\/\/steamcommunity\.com\/openid\/id\/(76561[0-9]{12})\/?$/;
 

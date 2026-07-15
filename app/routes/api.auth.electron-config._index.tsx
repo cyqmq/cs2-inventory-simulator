@@ -1,7 +1,7 @@
 import { badRequest } from "~/responses.server";
 import type { Route } from "./+types/api.auth.electron-config._index";
 
-const ELECTRON_SECRET = process.env.ELECTRON_AUTH_SECRET || "68UzqY7cLs2vD9VodiwfxJWjuQEmhrRX";
+const ELECTRON_SECRET = process.env.ELECTRON_AUTH_SECRET || "change-me-in-production";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { searchParams } = new URL(request.url);
