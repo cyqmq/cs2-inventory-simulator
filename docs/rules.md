@@ -1,567 +1,151 @@
-# Rules
-
-CS2 Inventory Simulator can be configured at runtime using rules. These rules can modify various behaviors of the app, such as enabling users to edit items and adding new ones. Each rule that can be altered is stored in the Rule table.
-
-> [!TIP]  
-> You can find all possible items and their attributes [here](https://raw.githubusercontent.com/ianlucas/cs2-lib/refs/heads/main/scripts/data/items.json).
-
-## App
-
-### `appName`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-Name of the app. If empty, uses Inventory Simulator's default value.
-
-### `appFooterName`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-Name in the footer of the app. If empty, uses Inventory Simulator's default value.
-
-### `appLogoUrl`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-URL of the app's logo. If empty, uses Inventory Simulator's logo. Restart required.
-
-### `appFaviconUrl`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-URL of the app's favicon. If empty, uses Inventory Simulator's favicon.
-
-### `appFaviconMimeType`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-MIME type of the app's favicon. If empty, uses Inventory Simulator's favicon MIME type.
-
-### `appSeoDescription`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-SEO description for the app. If empty, uses Inventory Simulator's default value.
-
-### `appSeoImageUrl`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-SEO image for the app. If empty, uses Inventory Simulator's default value.
-
-### `appSeoTitle`
-
-- **Type:** `string`
-- **Default:** _empty_
-
-SEO title for the app. If empty, uses Inventory Simulator's default value.
-
-### `appCountry`
-
-- **Type:** `string`
-- **Default:** `us`
-
-Country of the application (ISO-3166-1 alpha-2 code). Changes language if available.
-
-### `appCacheInventory`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Cache user's inventory if offline or unauthenticated.
-
-### `appHideLogo`
-
-- **Type:** `boolean`
-- **Default:** `false`
-
-Hide the logo in the app.
-
-### `appHideAuth`
-
-- **Type:** `boolean`
-- **Default:** `false`
-
-Hide authentication controls in the app.
-
-## Steam
-
-> [!CAUTION]  
-> Both `steamApiKey` and `steamCallbackUrl` are required for authentication to work.
-
-### `steamApiKey`
-
-- **Type:** `string`
-- **Default:** `STEAM_API_KEY` env var or `YOUR_STEAM_API_KEY_GOES_HERE`
-
-Steam API Key is used to retrieve user information from Steam.
-
-### `steamCallbackUrl`
-
-- **Type:** `string`
-- **Default:** `STEAM_CALLBACK_URL` env var or `http://localhost/sign-in/steam/callback`
-
-URL to validate Steam authentication.
-
-## Inventory
-
-### `inventoryMaxItems`
-
-- **Type:** `number`
-- **Default:** `256`
-
-Max number of items a user can add to inventory.
-
-### `inventoryStorageUnitMaxItems`
-
-- **Type:** `number`
-- **Default:** `32`
-
-Max items a storage unit can store.
-
-### `inventoryInactivityResetDays`
-
-- **Type:** `number`
-- **Default:** `0`
-
-Resets (deletes) a user's inventory after this many days without logging into the website or being fetched by the game server. `0` disables the rule. Set a per-user or per-group overwrite to `0` to make them immune.
-
-## Inventory items
-
-### `inventoryItemAllowEdit`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user edit an inventory item?
-
-### `inventoryItemAllowApplySticker`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user apply stickers to inventory items?
-
-### `inventoryItemAllowScrapeSticker`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user scrape stickers from inventory items?
-
-### `inventoryItemAllowRemoveSticker`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user remove stickers from inventory items?
-
-### `inventoryItemAllowApplyPatch`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user apply patches to inventory items?
-
-### `inventoryItemAllowRemovePatch`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user remove patches from inventory items?
-
-### `inventoryItemAllowUnlockContainer`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user unlock container inventory items?
-
-### `inventoryItemAllowInspectInGame`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user inspect an item in-game?
-
-### `inventoryItemAllowShare`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user share an inventory item?
-
-### `inventoryItemEquipHideModel`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Prevents equipping certain models. Example: `knife_flip;bayonet`.
-
-### `inventoryItemEquipHideType`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Prevents equipping certain types. Example: `agent;weapon`.
-
-## Craft
-
-### `craftHideCategory`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides a category from crafting. Example: `secondary;rifle`.
-
-### `craftHideType`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides a type from crafting. Example: `agent;case`.
-
-### `craftHideFilterType`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides type from crafting prompt. Example: `sticker`.
-
-### `craftHideModel`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides a model from crafting. Example: `knife_flip;bayonet`.
-
-### `craftHideId`
-
-- **Type:** `number-array`
-- **Default:** _empty_
-
-Hides a specific item from crafting. Example: `307`.
-
-### `craftMaxQuantity`
-
-- **Type:** `number`
-- **Default:** `0`
-
-Max quantity of an item that can be crafted. `0` means no limit.
-
-### `craftAllowNametag`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Name tag when crafting?
-
-### `craftAllowSeed`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Seed when crafting?
-
-### `craftAllowStatTrak`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define StatTrak when crafting?
-
-### `craftAllowWear`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Wear when crafting?
-
-### `craftAllowStickers`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Stickers when crafting?
-
-### `craftAllowStickerRotation`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Rotation when crafting?
-
-### `craftAllowStickerWear`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Wear when crafting?
-
-### `craftAllowStickerX`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker X offset when crafting?
-
-### `craftAllowStickerY`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Y offset when crafting?
-
-### `craftAllowStickerSchema`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Schema when crafting?
-
-### `craftAllowPatches`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Patches when crafting?
-
-### `craftAllowKeychains`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charms (keychains) when crafting?
-
-### `craftAllowKeychainSeed`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm Seed when crafting?
-
-### `craftAllowKeychainX`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm X offset when crafting?
-
-### `craftAllowKeychainY`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm Y offset when crafting?
-
-### `craftAllowKeychainZ`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm Z offset when crafting?
-
-### `craftAllowImportInspectLink`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user import items from inspect links when crafting?
-
-## Edit
-
-### `editHideCategory`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides a category from being edited. Example: `secondary;rifle`.
-
-### `editHideType`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides a type from being edited. Example: `sticker;weapon`.
-
-### `editHideModel`
-
-- **Type:** `string-array`
-- **Default:** _empty_
-
-Hides a model from being edited. Example: `knife_flip;bayonet`.
-
-### `editHideId`
-
-- **Type:** `number-array`
-- **Default:** _empty_
-
-Hides a specific item from being edited. Example: `307`.
-
-### `editAllowNametag`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Name tag when editing?
-
-### `editAllowSeed`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Seed when editing?
-
-### `editAllowStatTrak`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define StatTrak when editing?
-
-### `editAllowWear`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Wear when editing?
-
-### `editAllowStickers`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Stickers when editing?
-
-### `editAllowStickerRotation`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Rotation when editing?
-
-### `editAllowStickerWear`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Wear when editing?
-
-### `editAllowStickerX`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker X offset when editing?
-
-### `editAllowStickerY`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Y offset when editing?
-
-### `editAllowStickerSchema`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Sticker Schema when editing?
-
-### `editAllowPatches`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Patches when editing?
-
-### `editAllowKeychains`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charms (keychains) when editing?
-
-### `editAllowKeychainSeed`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm Seed when editing?
-
-### `editAllowKeychainX`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm X offset when editing?
-
-### `editAllowKeychainY`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm Y offset when editing?
-
-### `editAllowKeychainZ`
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Can the user define Charm Z offset when editing?
+# 规则配置
+
+CS2 Inventory Simulator 支持通过规则在运行时配置应用行为。所有规则存储在数据库 `Rule` 表中，可通过管理员 API 或直接操作数据库修改。
+
+> 所有可用的物品及属性见 [items.json](https://raw.githubusercontent.com/ianlucas/cs2-lib/refs/heads/main/scripts/data/items.json)。
+
+---
+
+## App（应用）
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `appName` | string | 空 | 应用名称 |
+| `appFooterName` | string | 空 | 页脚名称 |
+| `appLogoUrl` | string | 空 | Logo URL（需重启） |
+| `appFaviconUrl` | string | 空 | Favicon URL |
+| `appFaviconMimeType` | string | 空 | Favicon MIME 类型 |
+| `appSeoDescription` | string | 空 | SEO 描述 |
+| `appSeoImageUrl` | string | 空 | SEO 图片 |
+| `appSeoTitle` | string | 空 | SEO 标题 |
+| `appCountry` | string | `us` | 国家代码（ISO-3166-1 alpha-2） |
+| `appCacheInventory` | boolean | `true` | 离线/未登录时缓存用户库存 |
+| `appHideLogo` | boolean | `false` | 隐藏 Logo |
+| `appHideAuth` | boolean | `false` | 隐藏认证控件 |
+
+## Steam（认证）
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `steamApiKey` | string | 环境变量 `STEAM_API_KEY` | Steam API 密钥，用于获取用户信息 |
+| `steamCallbackUrl` | string | 环境变量 `STEAM_CALLBACK_URL` | Steam 认证回调 URL |
+
+> ⚠️ **注意：** 在桌面端纯 API 架构下，`steamCallbackUrl` 已废弃。Steam 认证在桌面端直接完成，服务器不参与回调。
+
+## Inventory（库存）
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `inventoryMaxItems` | number | `256` | 用户库存最大物品数 |
+| `inventoryStorageUnitMaxItems` | number | `32` | 收纳盒最大容量 |
+| `inventoryInactivityResetDays` | number | `0` | 超过 N 天未登录自动清空库存（0=禁用） |
+
+## Inventory Items（物品）
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `inventoryItemAllowEdit` | boolean | `true` | 允许编辑物品 |
+| `inventoryItemAllowApplySticker` | boolean | `true` | 允许应用贴纸 |
+| `inventoryItemAllowScrapeSticker` | boolean | `true` | 允许刮除贴纸 |
+| `inventoryItemAllowRemoveSticker` | boolean | `true` | 允许移除贴纸 |
+| `inventoryItemAllowApplyPatch` | boolean | `true` | 允许应用印花 |
+| `inventoryItemAllowRemovePatch` | boolean | `true` | 允许移除印花 |
+| `inventoryItemAllowUnlockContainer` | boolean | `true` | 允许开箱 |
+| `inventoryItemAllowInspectInGame` | boolean | `true` | 允许游戏内检视 |
+| `inventoryItemAllowShare` | boolean | `true` | 允许分享物品 |
+| `inventoryItemEquipHideModel` | string-array | 空 | 禁止装备指定模型（例: `knife_flip;bayonet`） |
+| `inventoryItemEquipHideType` | string-array | 空 | 禁止装备指定类型（例: `agent;weapon`） |
+
+## Craft（合成）
+
+### 可见性
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `craftHideCategory` | string-array | 空 | 隐藏合成分类（例: `secondary;rifle`） |
+| `craftHideType` | string-array | 空 | 隐藏合成类型（例: `agent;case`） |
+| `craftHideFilterType` | string-array | 空 | 隐藏合成筛选类型（例: `sticker`） |
+| `craftHideModel` | string-array | 空 | 隐藏合成模型（例: `knife_flip;bayonet`） |
+| `craftHideId` | number-array | 空 | 隐藏合成物品 ID（例: `307`） |
+
+### 功能开关
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `craftMaxQuantity` | number | `0` | 单次合成最大数量（0=无限制） |
+| `craftAllowNametag` | boolean | `true` | 允许自定义命名标签 |
+| `craftAllowSeed` | boolean | `true` | 允许自定义种子 |
+| `craftAllowStatTrak` | boolean | `true` | 允许 StatTrak |
+| `craftAllowWear` | boolean | `true` | 允许自定义磨损 |
+| `craftAllowStickers` | boolean | `true` | 允许贴纸设置 |
+| `craftAllowStickerRotation` | boolean | `true` | 允许贴纸旋转 |
+| `craftAllowStickerWear` | boolean | `true` | 允许贴纸磨损 |
+| `craftAllowStickerX` | boolean | `true` | 允许贴纸 X 偏移 |
+| `craftAllowStickerY` | boolean | `true` | 允许贴纸 Y 偏移 |
+| `craftAllowStickerSchema` | boolean | `true` | 允许贴纸布局 |
+| `craftAllowPatches` | boolean | `true` | 允许印花设置 |
+| `craftAllowKeychains` | boolean | `true` | 允许钥匙扣设置 |
+| `craftAllowKeychainSeed` | boolean | `true` | 允许钥匙扣种子 |
+| `craftAllowKeychainX` | boolean | `true` | 允许钥匙扣 X 偏移 |
+| `craftAllowKeychainY` | boolean | `true` | 允许钥匙扣 Y 偏移 |
+| `craftAllowKeychainZ` | boolean | `true` | 允许钥匙扣 Z 偏移 |
+| `craftAllowImportInspectLink` | boolean | `true` | 允许从检视链接导入 |
+
+## Edit（编辑）
+
+### 可见性
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `editHideCategory` | string-array | 空 | 隐藏编辑分类（例: `secondary;rifle`） |
+| `editHideType` | string-array | 空 | 隐藏编辑类型（例: `sticker;weapon`） |
+| `editHideModel` | string-array | 空 | 隐藏编辑模型（例: `knife_flip;bayonet`） |
+| `editHideId` | number-array | 空 | 隐藏编辑物品 ID（例: `307`） |
+
+### 功能开关
+
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `editAllowNametag` | boolean | `true` | 允许命名标签 |
+| `editAllowSeed` | boolean | `true` | 允许种子 |
+| `editAllowStatTrak` | boolean | `true` | 允许 StatTrak |
+| `editAllowWear` | boolean | `true` | 允许磨损 |
+| `editAllowStickers` | boolean | `true` | 允许贴纸编辑 |
+| `editAllowStickerRotation` | boolean | `true` | 允许贴纸旋转 |
+| `editAllowStickerWear` | boolean | `true` | 允许贴纸磨损 |
+| `editAllowStickerX` | boolean | `true` | 允许贴纸 X 偏移 |
+| `editAllowStickerY` | boolean | `true` | 允许贴纸 Y 偏移 |
+| `editAllowStickerSchema` | boolean | `true` | 允许贴纸布局 |
+| `editAllowPatches` | boolean | `true` | 允许印花编辑 |
+| `editAllowKeychains` | boolean | `true` | 允许钥匙扣编辑 |
+| `editAllowKeychainSeed` | boolean | `true` | 允许钥匙扣种子 |
+| `editAllowKeychainX` | boolean | `true` | 允许钥匙扣 X 偏移 |
+| `editAllowKeychainY` | boolean | `true` | 允许钥匙扣 Y 偏移 |
+| `editAllowKeychainZ` | boolean | `true` | 允许钥匙扣 Z 偏移 |
 
 ## CSFloat
 
-### `csFloatUrl`
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `csFloatUrl` | string | 空 | CSFloat API URL |
+| `csFloatHeaders` | string-array | 空 | CSFloat 请求头（例: `Authorization;Bearer MyAPIToken`） |
 
-- **Type:** `string`
-- **Default:** _empty_
+## Viewer（3D 查看器）
 
-CSFloat API URL for item inspection integration.
+| 规则 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `viewerEnabled` | boolean | `false` | 启用 3D 查看器 |
+| `viewerAttachmentsOnly` | boolean | `false` | 仅 3D 查看器用于附件功能（贴纸/钥匙扣） |
+| `viewerKey` | string | 环境变量 `VIEWER_KEY` | 3D 查看器合作伙伴密钥 |
 
-### `csFloatHeaders`
+---
 
-- **Type:** `string-array`
-- **Default:** _empty_
+## 规则覆盖
 
-CSFloat API request headers. Example: `Authorization;Bearer MyAPIToken`.
+规则支持按用户或用户组覆盖：
 
-## Viewer
+1. **`UserRule`** — 为特定用户设置规则
+2. **`GroupRule`** — 为用户组设置规则（需先创建 `Group`，再通过 `UserGroup` 关联用户）
+3. 用户同时属于多个组时，`priority` 较高的组规则生效
 
-### `viewerEnabled`
-
-- **Type:** `boolean`
-- **Default:** `false`
-
-Enable the 3D viewer (e.g. the craft sticker editor). Still gated by a reachable viewer and available rate-limit budget.
-
-### `viewerAttachmentsOnly`
-
-- **Type:** `boolean`
-- **Default:** `false`
-
-Restrict the 3D viewer to attachment features (applying, scraping, and positioning stickers - and keychains in the future). Item inspection and the craft item preview fall back to 2D images. Has no effect when `viewerEnabled` is `false`.
-
-### `viewerKey`
-
-- **Type:** `string`
-- **Default:** `VIEWER_KEY` env var or _empty_
-
-Partner key for the 3D viewer. Sent as the iframe `key` and used as a trusted-partner signal that skips the rate-limit check.
-
-## Rule overwriting
-
-There are two ways to overwrite rules: by adding records to `GroupRule` and `UserRule` tables. Users can be grouped by creating a record on `Group` table, and then associating each user to a group on `UserGroup`.
-
-1. If the system finds a rule for a user in `UserRule`, that rule will be enforced.
-2. If the system finds a rule for a group the user is in, on `GroupRule` table, that rule will enforced. If the user is associated to multiple groups, the rule for the group with the higher `priority` will be enforced.
-
-> [!TIP]  
-> For example, consider `admin` and `vip` groups - if a user is associated to both, you'd make sure `admin`'s `priority` is higher than `vip`'s.
+> 例：用户同时属于 `admin` 和 `vip` 组，应确保 `admin` 组的 `priority` 高于 `vip` 组。

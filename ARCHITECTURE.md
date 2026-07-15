@@ -1,5 +1,7 @@
 # 架构总览
 
+> 仓库地址：https://github.com/cyqmq/cs2-inventory-simulator
+
 ```
 ┌─── 桌面端（Electron） ─────────────────────────────────────────────┐
 │                                                                     │
