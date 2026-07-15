@@ -1,6 +1,6 @@
 {
   "name": "@ianlucas/cs2-inventory-simulator",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "CS2 Inventory Simulator Desktop Client",
   "main": "dist-electron/main.js",
   "author": "cyqmq",

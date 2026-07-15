@@ -11,3 +11,7 @@ node_modules
 /dist-electron
 /release
 .electron-build
+asar-check2/
+asar-temp/
+main.js
+preload.js

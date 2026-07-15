@@ -9,7 +9,7 @@ files:
   - package.json
 win:
   target:
-    - target: portable
+    - target: nsis
       arch:
         - x64
 mac:
@@ -26,3 +26,5 @@ linux:
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  perMachine: false

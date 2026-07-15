@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, net } from "electron";
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
@@ -117,7 +117,7 @@ async function verifySteamLogin(
   const body = new URLSearchParams(params);
   body.set("openid.mode", "check_authentication");
 
-  const response = await fetch(STEAM_OPENID_SERVER, {
+  const response = await net.fetch(STEAM_OPENID_SERVER, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body
@@ -141,29 +141,37 @@ let steamLoginResolve: (() => void) | null = null;
 let steamLoginReject: ((err: Error) => void) | null = null;
 
 async function handleSteamCallback(url: string) {
+  console.log("[CS2-MAIN] handleSteamCallback called, isSteamLogin:", isSteamLogin);
   if (!isSteamLogin || !mainWindow) return;
   const apiBaseUrl = getApiBaseUrl();
   const port = localServerPort || 13579;
   const returnUrl = `http://127.0.0.1:${port}/steam-callback`;
-  if (!url.startsWith(returnUrl)) return;
+  console.log("[CS2-MAIN] callback url:", url);
+  console.log("[CS2-MAIN] expected prefix:", returnUrl);
+  if (!url.startsWith(returnUrl)) {
+    console.log("[CS2-MAIN] URL prefix mismatch, ignoring");
+    return;
+  }
 
   try {
     const params = callbackParams || {};
     callbackParams = null;
+    console.log("[CS2-MAIN] callbackParams keys:", Object.keys(params));
 
     const steamId = await verifySteamLogin(params, returnUrl);
+    console.log("[CS2-MAIN] steamId:", steamId);
 
     let nickname = "Player";
     let avatarUrl = "";
     try {
-      const apiKeyResp = await fetch(
+      const apiKeyResp = await net.fetch(
         `${apiBaseUrl}/api/auth/electron-config?secret=${encodeURIComponent(ELECTRON_AUTH_SECRET)}`,
         { method: "GET", signal: AbortSignal.timeout(5000) }
       );
       if (apiKeyResp.ok) {
         const { steamApiKey } = await apiKeyResp.json() as { steamApiKey?: string };
         if (steamApiKey) {
-          const summaryResp = await fetch(
+          const summaryResp = await net.fetch(
             `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${steamApiKey}&steamids=${steamId}`,
             { signal: AbortSignal.timeout(5000) }
           );
@@ -177,32 +185,63 @@ async function handleSteamCallback(url: string) {
           }
         }
       }
-    } catch { /* non-critical, use defaults */ }
+      console.log("[CS2-MAIN] steam profile: nickname=%s avatar=%s", nickname, avatarUrl);
+    } catch (e) { console.log("[CS2-MAIN] profile fetch non-critical error:", e); }
 
-    const sessionResp = await fetch(
+    console.log("[CS2-MAIN] calling /api/auth/electron for steamId:", steamId);
+    const sessionResp = await net.fetch(
       `${apiBaseUrl}/api/auth/electron?steamId=${encodeURIComponent(steamId)}&secret=${encodeURIComponent(ELECTRON_AUTH_SECRET)}&nickname=${encodeURIComponent(nickname)}&avatar=${encodeURIComponent(avatarUrl)}`,
       { method: "GET", signal: AbortSignal.timeout(10000) }
     );
+    console.log("[CS2-MAIN] /api/auth/electron status:", sessionResp.status);
     if (!sessionResp.ok) {
       throw new Error(`Session creation failed: ${sessionResp.status}`);
     }
     const { sessionCookie } = await sessionResp.json() as { sessionCookie: string };
+    console.log("[CS2-MAIN] sessionCookie raw length:", sessionCookie.length);
+    console.log("[CS2-MAIN] sessionCookie raw prefix:", sessionCookie.substring(0, 30));
+
+    const _prefix = "_session=";
+    const _rawValue = sessionCookie.startsWith(_prefix)
+      ? sessionCookie.substring(_prefix.length).split(";")[0]
+      : sessionCookie;
+    console.log("[CS2-MAIN] rawValue length:", _rawValue.length);
+    console.log("[CS2-MAIN] rawValue prefix:", _rawValue.substring(0, 20));
+
+    const _maxAgeMatch = sessionCookie.match(/Max-Age=(\d+)/i);
+    const _maxAge = _maxAgeMatch ? parseInt(_maxAgeMatch[1], 10) : 2147483647;
+    const _expirationDate = Math.floor(Date.now() / 1000) + _maxAge;
 
     await mainWindow.webContents.session.cookies.set({
       url: apiBaseUrl,
       name: "_session",
-      value: sessionCookie,
+      value: _rawValue,
       path: "/",
       secure: apiBaseUrl.startsWith("https"),
       httpOnly: true,
-      sameSite: "lax"
+      sameSite: "no_restriction",
+      expirationDate: _expirationDate
     });
+    console.log("[CS2-MAIN] cookie set done");
+
+    // Verify cookie was stored
+    const storedCookies = await mainWindow.webContents.session.cookies.get({ url: apiBaseUrl, name: "_session" });
+    console.log("[CS2-MAIN] stored cookies count:", storedCookies.length);
+    if (storedCookies.length > 0) {
+      console.log("[CS2-MAIN] stored cookie name:", storedCookies[0].name);
+      console.log("[CS2-MAIN] stored cookie value length:", storedCookies[0].value.length);
+      console.log("[CS2-MAIN] stored cookie domain:", storedCookies[0].domain);
+      console.log("[CS2-MAIN] stored cookie sameSite:", storedCookies[0].sameSite);
+      console.log("[CS2-MAIN] stored cookie secure:", storedCookies[0].secure);
+    }
 
     isSteamLogin = false;
+    console.log("[CS2-MAIN] loading URL http://127.0.0.1:" + port + "/");
     mainWindow.loadURL(`http://127.0.0.1:${port}/`);
     steamLoginResolve?.();
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
+    console.log("[CS2-MAIN] ERROR:", msg);
     isSteamLogin = false;
     mainWindow.loadURL(`http://127.0.0.1:${port}/`);
     steamLoginReject?.(new Error(msg));
@@ -245,7 +284,6 @@ async function createWindow() {
   } else {
     const port = await startLocalServer(path.join(__dirname, "..", "build", "client"));
     mainWindow.loadURL(`http://127.0.0.1:${port}`);
-    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on("closed", () => {
